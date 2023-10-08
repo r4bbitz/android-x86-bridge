@@ -1,48 +1,38 @@
 # Bundle Houdini as ARM on x86 native bridge
 WITH_NATIVE_BRIDGE := true
-
-PRODUCT_PRODUCT_PROPERTIES += \
+NDK_TRANSLATION_PREINSTALL := true
+PRODUCT_PROPERTY_OVERRIDES += \
     ro.dalvik.vm.isa.arm=x86 \
     ro.dalvik.vm.isa.arm64=x86_64 \
     ro.enable.native.bridge.exec=1
 
 # Requires BoardConfig.mk to include PRODUCT_FULL_TREBLE := true
-PRODUCT_PRODUCT_PROPERTIES  += \
-    ro.dalvik.vm.native.bridge=libndk_translation.so
 
 LIBNDK_TRANSLATION_PATH := $(dir $(LOCAL_PATH))proprietary/libndk_translation
 
-# bin/*
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/bin,$(TARGET_COPY_OUT_SYSTEM)/bin)
+PRODUCT_PROPERTY_OVERRIDES += ro.dalvik.vm.native.bridge=libndk_translation.so
 
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/bin/arm,$(TARGET_COPY_OUT_SYSTEM)/bin/arm)
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
+    ro.dalvik.vm.native.bridge=libndk_translation.so
 
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/bin/arm64,$(TARGET_COPY_OUT_SYSTEM)/bin/arm64)
+HOUDINI_PATH := $(dir $(LOCAL_PATH))proprietary/libndk_translation
 
-# etc/*
+ifeq ($(patsubst %x86_64,,$(lastword $(TARGET_PRODUCT))),)
 PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/etc,$(TARGET_COPY_OUT_SYSTEM)/etc)
-    
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/etc/binfmt_misc,$(TARGET_COPY_OUT_SYSTEM)/etc/binfmt_misc)
-    
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/etc/init,$(TARGET_COPY_OUT_SYSTEM)/etc/init)
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation,$(TARGET_COPY_OUT_SYSTEM)) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/etc/binfmt_misc,$(TARGET_COPY_OUT_SYSTEM)/etc/binfmt_misc) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/etc/init,$(TARGET_COPY_OUT_SYSTEM)/etc/init) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/bin/arm,$(TARGET_COPY_OUT_SYSTEM)/bin/arm) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/bin/arm64,$(TARGET_COPY_OUT_SYSTEM)/bin/arm64) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/lib/arm,$(TARGET_COPY_OUT_SYSTEM)/lib/arm) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/lib64/arm64,$(TARGET_COPY_OUT_SYSTEM)/lib64/arm64) \
 
-# lib/*
+else ifeq ($(patsubst %x86,,$(lastword $(TARGET_PRODUCT))),)
 PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/lib,$(TARGET_COPY_OUT_SYSTEM)/lib)
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation,$(TARGET_COPY_OUT_SYSTEM)) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/etc/binfmt_misc,$(TARGET_COPY_OUT_SYSTEM)/etc/binfmt_misc) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/etc/init,$(TARGET_COPY_OUT_SYSTEM)/etc/init) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/bin/arm,$(TARGET_COPY_OUT_SYSTEM)/bin/arm) \
+    $(call find-copy-subdir-files,*,$(dir $(LOCAL_PATH))proprietary/libndk_translation/lib/arm,$(TARGET_COPY_OUT_SYSTEM)/lib/arm) \
 
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/lib/arm,$(TARGET_COPY_OUT_SYSTEM)/lib/arm)
-
-# lib64/*
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/lib64,$(TARGET_COPY_OUT_SYSTEM)/lib64)
-    
-PRODUCT_COPY_FILES += \
-    $(call find-copy-subdir-files,*,$(LIBNDK_TRANSLATION_PATH)/lib64/arm64,$(TARGET_COPY_OUT_SYSTEM)/lib64/arm64)
-
+endif
