@@ -86,7 +86,7 @@ binwalk -e \
     --depth 1 \
     --count 1 \
     -y 'filesystem' \
-    super.img # only search for filesystem signatures
+    1.super.img # only search for filesystem signatures
 
 # 1048576       0x100000        \
 # Linux EXT filesystem, blocks count: 234701, \
@@ -98,12 +98,13 @@ cd extracted
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting super.img"${reset}
 echo -e ${reset}""${reset}
-yes | 7z x ../_super.img.extracted/100000.ext
+yes | 7z x ../_1.super.img.extracted/100000.ext ox86_64
+#yes | 7z x ../_super.img.extracted/100000.ext
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in system.img"${reset}
 echo -e ${reset}""${reset}
 #~ find system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | tar -cf native-bridge.tar -T -
-find ${ARCH}/system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | grep -v libalarm_jni.so | tar -cf native-bridge.tar -T -
+find system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | grep -v libalarm_jni.so | tar -cf native-bridge.tar -T -
 
 
 
@@ -128,7 +129,7 @@ echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in vendor.img"${reset}
 echo -e ${reset}""${reset}
 
-find ${ARCH}/vendor \( -name '*libwv*' -o -name '*widevine*' -o -name 'libprotobuf-cpp-lite*' \) | tar -cf widevine.tar -T -
+find vendor \( -name '*libwv*' -o -name '*widevine*' -o -name 'libprotobuf-cpp-lite*' \) | tar -cf widevine.tar -T -
 
 stat widevine.tar
 
@@ -167,11 +168,8 @@ echo -e ${reset}""${reset}
 echo -e ${ltyellow}"Creating Android.bp for widevine"${reset}
 echo -e ${reset}""${reset}
 cp -r $vendor_path/templates/widevine/ ${TARGET_DIR}/
-if [ -f ${TARGET_DIR}/widevine/Android.bp.$wv_api.$ARCH.template ]; then
-    mv ${TARGET_DIR}/widevine/Android.bp.$wv_api.$ARCH.template ${TARGET_DIR}/widevine/Android.bp
-else
-    mv ${TARGET_DIR}/widevine/Android.bp.$wv_api.template ${TARGET_DIR}/widevine/Android.bp
-fi
+mv ${TARGET_DIR}/widevine/Android.bp.31.$ARCH.template ${TARGET_DIR}/widevine/Android.bp
+
 
 
 echo -e ${reset}""${reset}
