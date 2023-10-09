@@ -101,13 +101,7 @@ binwalk -e \
     --count 1 \
     -y 'filesystem' \
     ${ARCH}-system/super.img # only search for filesystem signatures
-if [ $ARCH = "x86_64" ]; then
-    binwalk -e \
-    --depth 1 \
-    --count 1 \
-    -y 'filesystem' \
-    x86-system/super.img # only search for filesystem signatures
-fi
+
 
 # 1048576       0x100000        \
 # Linux EXT filesystem, blocks count: 234701, \
@@ -120,17 +114,11 @@ echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting super.img"${reset}
 echo -e ${reset}""${reset}
 yes | 7z x ../${ARCH}-system/_super.img.extracted/100000.ext* -o${ARCH}
-if [ $ARCH = "x86_64" ]; then
-    yes | 7z x ../x86-system/_super.img.extracted/100000.ext* -ox86
-fi
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in system.img"${reset}
 echo -e ${reset}""${reset}
 #~ find system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | tar -cf native-bridge.tar -T -
 find ${ARCH}/system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | grep -v libalarm_jni.so | tar -cf native-bridge.tar -T -
-if [ $ARCH = "x86_64" ]; then
-    find x86/system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | grep -v libalarm_jni.so | tar -cf native-bridge_x86.tar -T -
-fi
 
 stat native-bridge.tar
 if [ $ARCH = "x86_64" ]; then
