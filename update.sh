@@ -100,7 +100,7 @@ echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in system.img"${reset}
 echo -e ${reset}""${reset}
 #~ find system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | tar -cf native-bridge.tar -T -
-find system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | grep -v libalarm_jni.so | tar -cf native-bridge.tar -T -
+find ${ARCH}/system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | grep -v libalarm_jni.so | tar -cf native-bridge.tar -T -
 
 stat native-bridge.tar
 
@@ -123,7 +123,7 @@ echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in vendor.img"${reset}
 echo -e ${reset}""${reset}
 
-find vendor \( -name '*libwv*' -o -name '*widevine*' -o -name 'libprotobuf-cpp-lite*' \) | tar -cf widevine.tar -T -
+find ${ARCH}/vendor \( -name '*libwv*' -o -name '*widevine*' -o -name 'libprotobuf-cpp-lite*' \) | tar -cf widevine.tar -T -
 
 #find vendor \( -name 'android.hardware.drm@1.3-service.widevine*' -o -name '*libwvdrmengine*' -o -name 'libwvhidl*' -o -name '*libwv*' \) | tar -cf widevine.tar -T -
 
