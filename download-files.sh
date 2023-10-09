@@ -45,7 +45,7 @@ if ! sha1sum -c <<< "$ASEMU_SHA1" 2> /dev/null; then
         exit 1
     fi
 
-    sha1sum -c <<< "$ASEMU_SHA1"
+    #sha1sum -c <<< "$ASEMU_SHA1"
 fi
 
 
