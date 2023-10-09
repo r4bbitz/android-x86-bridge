@@ -91,8 +91,8 @@ fi
 #~ cd $dl_vendor_path/temp
 
 # Extract .zip
-#echo "7z x $ASEMU_FILE_PATH -o$temp_dir/extracted"
-#7z x $ASEMU_FILE_PATH -o$temp_dir/extracted
+echo "7z x $ASEMU_FILE_PATH -o$temp_dir/extracted"
+7z x $ASEMU_FILE_PATH -o$temp_dir/extracted
 # TODO - Use p7zip to open file or use lpunpack 
 # TODO - Extract first system.img
 
