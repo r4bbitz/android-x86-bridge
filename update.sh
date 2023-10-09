@@ -100,7 +100,8 @@ binwalk -e \
     --depth 1 \
     --count 1 \
     -y 'filesystem' \
-    ${ARCH}-system/super.img # only search for filesystem signatures
+    super.img
+ # only search for filesystem signatures
 
 
 # 1048576       0x100000        \
