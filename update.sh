@@ -98,7 +98,7 @@ cd extracted
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting super.img"${reset}
 echo -e ${reset}""${reset}
-yes | 7z x ../_1.super.img.extracted/100000.ext ox86_64
+yes | 7z x ../_1.super.img.extracted/100000.ext
 #yes | 7z x ../_super.img.extracted/100000.ext
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in system.img"${reset}
