@@ -84,26 +84,17 @@ cd $vendor_path/temp
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Chercking Downloaded Files"${reset}
 echo -e ${reset}""${reset}
-yes | ./../download-files.sh "${ARCH}" || return $?
-if [ $ARCH = "x86_64" ]; then
-    yes | ./../download-files.sh "x86" || return $?
-fi
+yes | ./../download-files.sh "${ARCH}"
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting images"${reset}
 echo -e ${reset}""${reset}
-yes | 7z x "${ARCH}-*.zip"
-if [ $ARCH = "x86_64" ]; then
-    yes | 7z x "x86-*.zip"
-fi
+yes | unzip "${ARCH}-*-linux.zip"
 
 
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting system.img"${reset}
 echo -e ${reset}""${reset}
-yes | 7z e ${ARCH}/system.img -o${ARCH}-system
-if [ $ARCH = "x86_64" ]; then
-    yes | 7z e x86/system.img -ox86-system
-fi
+yes | 7z e x86_64/system.img
 
 binwalk -e \
     --depth 1 \
