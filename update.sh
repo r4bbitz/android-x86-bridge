@@ -39,23 +39,9 @@ rompath=$(pwd)
 vendor_path="$rompath/vendor/google/emu-x86"
 TARGET_DIR="$rompath/vendor/google/emu-x86/proprietary"
 
+
 ARCH="${1}"
 ARCH="${ARCH:="x86_64"}"
-
-if [ -f $rompath/build/make/core/version_defaults.mk ]; then
-	if grep -q "PLATFORM_SDK_VERSION := 29" $rompath/build/make/core/version_defaults.mk; then
-        wv_api="29"
-    fi
-    if grep -q "PLATFORM_SDK_VERSION := 30" $rompath/build/make/core/version_defaults.mk; then
-        wv_api="30"
-    fi
-    if grep -q "PLATFORM_SDK_VERSION := 31" $rompath/build/make/core/version_defaults.mk; then
-        wv_api="31"
-    fi
-    if grep -q "PLATFORM_SDK_VERSION := 32" $rompath/build/make/core/version_defaults.mk; then
-        wv_api="31"
-    fi
-fi
 
 #~ temp_dir=$(mktemp -d)
 temp_dir="$vendor_path/temp"
@@ -100,9 +86,7 @@ binwalk -e \
     --depth 1 \
     --count 1 \
     -y 'filesystem' \
-    super.img
- # only search for filesystem signatures
-
+    super.img # only search for filesystem signatures
 
 # 1048576       0x100000        \
 # Linux EXT filesystem, blocks count: 234701, \
@@ -114,62 +98,57 @@ cd extracted
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting super.img"${reset}
 echo -e ${reset}""${reset}
-yes | 7z x ../${ARCH}-system/_super.img.extracted/100000.ext* -o${ARCH}
+yes | 7z x ../_super.img.extracted/100000.ext
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in system.img"${reset}
 echo -e ${reset}""${reset}
 #~ find system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | tar -cf native-bridge.tar -T -
 find ${ARCH}/system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | grep -v libalarm_jni.so | tar -cf native-bridge.tar -T -
 
+
+
 stat native-bridge.tar
 
 #~ echo "${PWD}/native-bridge.tar"
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"${PWD}/native-bridge.tar"${reset}
-
 echo -e ${reset}""${reset}
 
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting vendor.img"${reset}
 echo -e ${reset}""${reset}
 
-cd ${ARCH}/vendor
+cd vendor 
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting vendor.img"${reset}
 echo -e ${reset}""${reset}
-yes | 7z x ../../../${ARCH}/vendor.img
-cd ../..
-
+yes | 7z x ../x86_64/vendor.img
+cd ..
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in vendor.img"${reset}
 echo -e ${reset}""${reset}
+
 find ${ARCH}/vendor \( -name '*libwv*' -o -name '*widevine*' -o -name 'libprotobuf-cpp-lite*' \) | tar -cf widevine.tar -T -
 
-
 stat widevine.tar
-
 
 #~ echo "${PWD}/widevine.tar"
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"${PWD}/widevine.tar"${reset}
-
 echo -e ${reset}""${reset}
 rm -rf ${TARGET_DIR}/*.tar
 cp native-bridge.tar ${TARGET_DIR}
 cp widevine.tar ${TARGET_DIR}
-
 
 cd ${TARGET_DIR}
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"placing system files"${reset}
 echo -e ${reset}""${reset}
 tar --verbose -xf native-bridge.tar
-
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"placing vendor files"${reset}
 echo -e ${reset}""${reset}
 tar --verbose -xf widevine.tar
-
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"Starting to clean up"${reset}
 echo -e ${reset}""${reset}
@@ -177,16 +156,13 @@ rm -rf libndk_translation widevine
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"making libndk_translation folder"${reset}
 echo -e ${reset}""${reset}
-mv ${ARCH}/system libndk_translation
-
+mv system libndk_translation
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"making widevine folder"${reset}
 echo -e ${reset}""${reset}
 mkdir -p widevine
-mv ${ARCH}/vendor widevine/vendor
-rmdir ${ARCH}
-rm *.tar
-
+mv vendor widevine/vendor
+cp widevine/vendor/lib64/libwvhidl.so widevine/vendor/lib/
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"Creating Android.bp for widevine"${reset}
 echo -e ${reset}""${reset}
@@ -197,13 +173,14 @@ else
     mv ${TARGET_DIR}/widevine/Android.bp.$wv_api.template ${TARGET_DIR}/widevine/Android.bp
 fi
 
+
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"Cleaning up a bit more"${reset}
 echo -e ${reset}""${reset}
-rm -rf $vendor_path/temp/${ARCH}-system $vendor_path/temp/extracted $vendor_path/temp/${ARCH} $vendor_path/temp/*.tar
-
+rm -rf $vendor_path/temp/*.img $vendor_path/temp/_super.img.extracted $vendor_path/temp/extracted $vendor_path/temp/x86_64 
 cd $rompath
 echo -e ${reset}""${reset}
 echo -e ${ltgreen}"All Done! Files can be found in ${TARGET_DIR}"${reset}
 echo -e ${reset}""${reset}
+
  
