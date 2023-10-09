@@ -121,16 +121,11 @@ echo -e ${reset}""${reset}
 find ${ARCH}/system \( -name 'libndk_translation*' -o -name '*arm*' -o -name 'ndk_translation*' \) | grep -v libalarm_jni.so | tar -cf native-bridge.tar -T -
 
 stat native-bridge.tar
-if [ $ARCH = "x86_64" ]; then
-    stat native-bridge_x86.tar
-fi
 
 #~ echo "${PWD}/native-bridge.tar"
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"${PWD}/native-bridge.tar"${reset}
-if [ $ARCH = "x86_64" ]; then
-    echo -e ${ltblue}"${PWD}/native-bridge_x86.tar"${reset}
-fi
+
 echo -e ${reset}""${reset}
 
 echo -e ${reset}""${reset}
@@ -143,57 +138,37 @@ echo -e ${ltblue}"Extracting vendor.img"${reset}
 echo -e ${reset}""${reset}
 yes | 7z x ../../../${ARCH}/vendor.img
 cd ../..
-if [ $ARCH = "x86_64" ]; then
-    cd x86/vendor
-    echo -e ${reset}""${reset}
-    echo -e ${ltblue}"Extracting x86 vendor.img"${reset}
-    echo -e ${reset}""${reset}
-    yes | 7z x ../../../x86/vendor.img
-cd ../..
-fi
+
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Finding needed files in vendor.img"${reset}
 echo -e ${reset}""${reset}
 find ${ARCH}/vendor \( -name '*libwv*' -o -name '*widevine*' -o -name 'libprotobuf-cpp-lite*' \) | tar -cf widevine.tar -T -
-if [ $ARCH = "x86_64" ]; then
-    find x86/vendor \( -name '*libwv*' -o -name '*widevine*' -o -name 'libprotobuf-cpp-lite*' \) | tar -cf widevine_x86.tar -T -
-fi
+
 
 stat widevine.tar
-if [ $ARCH = "x86_64" ]; then
-    stat widevine_x86.tar
-fi
+
 
 #~ echo "${PWD}/widevine.tar"
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"${PWD}/widevine.tar"${reset}
-if [ $ARCH = "x86_64" ]; then
-    echo -e ${ltblue}"${PWD}/widevine_x86.tar"${reset}
-fi
+
 echo -e ${reset}""${reset}
 rm -rf ${TARGET_DIR}/*.tar
 cp native-bridge.tar ${TARGET_DIR}
 cp widevine.tar ${TARGET_DIR}
-if [ $ARCH = "x86_64" ]; then
-    cp native-bridge_x86.tar ${TARGET_DIR}
-    cp widevine_x86.tar ${TARGET_DIR}
-fi
+
 
 cd ${TARGET_DIR}
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"placing system files"${reset}
 echo -e ${reset}""${reset}
 tar --verbose -xf native-bridge.tar
-if [ $ARCH = "x86_64" ]; then
-    tar --verbose -xf native-bridge_x86.tar
-fi
+
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"placing vendor files"${reset}
 echo -e ${reset}""${reset}
 tar --verbose -xf widevine.tar
-if [ $ARCH = "x86_64" ]; then
-    tar --verbose -xf widevine_x86.tar
-fi
+
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"Starting to clean up"${reset}
 echo -e ${reset}""${reset}
@@ -202,10 +177,7 @@ echo -e ${reset}""${reset}
 echo -e ${ltyellow}"making libndk_translation folder"${reset}
 echo -e ${reset}""${reset}
 mv ${ARCH}/system libndk_translation
-if [ $ARCH = "x86_64" ]; then
-    mv x86/system/lib/ libndk_translation
-	mv x86/system/bin/* libndk_translation/bin/
-fi
+
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"making widevine folder"${reset}
 echo -e ${reset}""${reset}
@@ -213,10 +185,7 @@ mkdir -p widevine
 mv ${ARCH}/vendor widevine/vendor
 rmdir ${ARCH}
 rm *.tar
-if [ $ARCH = "x86_64" ]; then
-    mv x86/vendor/lib/ widevine/vendor
-	rm -rf x86/
-fi
+
 echo -e ${reset}""${reset}
 echo -e ${ltyellow}"Creating Android.bp for widevine"${reset}
 echo -e ${reset}""${reset}
@@ -231,9 +200,7 @@ echo -e ${reset}""${reset}
 echo -e ${ltyellow}"Cleaning up a bit more"${reset}
 echo -e ${reset}""${reset}
 rm -rf $vendor_path/temp/${ARCH}-system $vendor_path/temp/extracted $vendor_path/temp/${ARCH} $vendor_path/temp/*.tar
-if [ $ARCH = "x86_64" ]; then
-    rm -rf $vendor_path/temp/x86-system $vendor_path/temp/x86
-fi
+
 cd $rompath
 echo -e ${reset}""${reset}
 echo -e ${ltgreen}"All Done! Files can be found in ${TARGET_DIR}"${reset}
