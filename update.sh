@@ -74,7 +74,7 @@ yes | ./../download-files.sh "${ARCH}"
 echo -e ${reset}""${reset}
 echo -e ${ltblue}"Extracting images"${reset}
 echo -e ${reset}""${reset}
-yes | unzip "${ARCH}-*-linux.zip"
+yes | unzip "${ARCH}-*.zip"
 
 
 echo -e ${reset}""${reset}

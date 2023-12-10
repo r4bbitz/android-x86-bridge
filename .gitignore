@@ -12,3 +12,5 @@ proprietary
 /g_system_ext/**/*.odex
 /g_system_ext/**/*.mk
 /extracted/**
+system
+.idea
