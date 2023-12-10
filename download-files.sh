@@ -13,9 +13,9 @@ fi
 
 temp_dir="$dl_vendor_path"
 
-ASEMU_SDK="31"
-ASEMU_REVISION="08"
-ASEMU_FILE="${ASEMU_VERSION}-${ASEMU_SDK}_r${ASEMU_REVISION}-linux"
+ASEMU_SDK="33"
+ASEMU_REVISION="05"
+ASEMU_FILE="${ASEMU_VERSION}-${ASEMU_SDK}_r${ASEMU_REVISION}"
 echo $ASEMU_FILE
 ASEMU_FILENAME="$ASEMU_FILE.zip"
 ASEMU_URL="https://dl.google.com/android/repository/sys-img/google_apis_playstore/$ASEMU_FILENAME"
